@@ -61,4 +61,5 @@ void freeCirculo(Circulo c){
 	if (newCirculo->corPreenchimento != NULL){
 		free(newCirculo->corPreenchimento);
 	}
+	free(c);
 }

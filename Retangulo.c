@@ -68,3 +68,9 @@ void freeCor(Retangulo r){
 		free(newretangulo->corPreenchimento);
 	}
 }
+
+void freeRetangulo(Retangulo r){
+	freeCor(r);
+	if (r != NULL)
+		free(r);
+}

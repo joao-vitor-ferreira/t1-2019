@@ -4,25 +4,17 @@
 #include "Circulo.h"
 #include "Comandos.h"
 #include "CalculoCirculoRetangulo.h"
-#include "Lista.h"
-#include "Quadra.h"
-#include "Semaforo.h"
-#include "Torre.h"
-#include "Hidrante.h"
 #include "Svg.h"
 
 int main (int argc, char **argv){
-	Lista listCir, listRet, listQua, listSem, listHid, listTor;
-	listSem = createList();
-	listTor = createList();
-	listRet = createList();
-	listCir = createList();
-	listQua = createList();
-	listHid = createList();
 	FILE *svgMain, *svgQry;
+	Retangulo r;
+	Item obj;
+	Circulo c;
+	Vector vetor;
 	int a, b;
-	double  svgW = 0, svgH = 0;
-	char *str, *str2, *str3, *str4;
+	double  svgW, svgH;
+	char *str = NULL, *str2 = NULL;	
 	svgMain = NULL; 
 	svgW = 0.0;
 	svgH = 0.0;
@@ -30,63 +22,58 @@ int main (int argc, char **argv){
 	if (str == NULL){
 		printf("Diretório de saída não informado\n");
 		return 0;
-	} 
-	str2 = pegaParametro(argc, argv, "-f");
+	}
+	str = pegaParametro(argc, argv, "-f");
 	if (str == NULL){
 		printf("Arquivo de entrada não informado\n");
 		return 0;
 	}
-	str = colocaBarra(str);
-	str3 = (char*)malloc(sizeof(char)*(strlen(str) + strlen(str2) + 1));
-	strcpy(str3, str);
-	b = 0;
-	for(a = strlen(str); a<(strlen(str) + strlen(str2) -3); a++){
-		str3[a] = str2[b];
-		b++;
-	}
-	str3[a] = 's';
-	a++;
-	str3[a] = 'v';
-	a++;
-	str3[a] = 'g';
-	a++;
-	str3[a] = '\0';
-	svgMain = fopen(str3, "w");
-	fprintf(svgMain, "                                                                  ");
-	if (str != NULL)
-		free(str);
-	str = funcIn(argc, argv, "-f");
-	leitura(argc, argv, str, &svgH, &svgW, &svgMain, listCir, listRet, listQua, listSem, listHid, listTor);
+	str = funcSvgMain(argc, argv, "-f");
+	svgMain = fopen(str, "w");
 	funcFree(&str);
-	writeSvg(&svgMain, listCir, listRet, listSem, listQua, listTor, listHid);
+	fprintf(svgMain, "                                                                  ");
+	leituraGeo(argc, argv, &svgH, &svgW, svgMain, &vetor);
+	funcFree(&str);
+	printSvgVector(vetor, svgMain);
 	fprintf(svgMain, "</svg>");
 	rewind(svgMain);
 	svgH += 10.0;
-	svgW += 10.0;
+	svgW += 100.0;
 	fprintf(svgMain, "<svg width=\"%f\" height=\"%f\">\n", svgW, svgH);
-	str = funcIn(argc, argv, "-q");	
+	fclose(svgMain);
+	str = pegaParametro(argc, argv, "-q");
 	if (str != NULL){
-		str4 = funcSvgQry(argc, argv);
-		svgQry = fopen(str4, "w");
-		funcFree(&str4);
-		fprintf(svgQry, "                                                                          ");
-		leitura(argc, argv, str, &svgH, &svgW, &svgQry, listCir, listRet, listQua, listSem, listHid, listTor);
+		str = funcSvg(argc, argv);
+		svgQry = fopen(str, "w");
 		funcFree(&str);
-		writeSvg(&svgQry, listCir, listRet, listSem, listQua, listTor, listHid);
+		fprintf(svgQry, "                                                                  ");
+		leituraQry(argc, argv, &svgH, &svgW, svgQry, vetor);
+		printSvgVector(vetor, svgQry);
 		fprintf(svgQry, "</svg>");
 		rewind(svgQry);
 		svgH += 10.0;
-		svgW += 10.0;
+		svgW += 100.0;
 		fprintf(svgQry, "<svg width=\"%f\" height=\"%f\">\n", svgW, svgH);
 		fclose(svgQry);
 	}
-	funcFree(&str2);
-	funcFree(&str3);
-	deleteListComplete(listRet, freeCor);
-	deleteListComplete(listCir, freeCirculo);
-	deleteListComplete(listTor, freeTorre);
-	deleteListComplete(listSem, freeSemaforo);
-	deleteListComplete(listQua, freeQuadra);
-	deleteListComplete(listHid, freeHidrante);
-	fclose(svgMain);
+	
+	for (a=0; a<getSizeVector(vetor); a++){
+		obj = getObjVector(vetor, a);
+		if (obj != NULL){
+			b = getTypeObj(vetor, a);
+			if (b == 0){
+				c = getObjVector(vetor, a);
+				if (c != NULL){
+					freeCirculo(c);
+				}
+			} else{
+				r = getObjVector(vetor, a);
+				if (r != NULL){
+					freeRetangulo(r);
+				}
+			}
+		}
+		
+	}
+	freeVector(vetor);
 }

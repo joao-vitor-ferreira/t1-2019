@@ -1,17 +1,20 @@
 #ifndef COMANDOS_H
 #define COMANDOS_H
-#include "Lista.h"
+#include "Vector.h"
 
-	typedef int (*Equip)(FILE **txt, Item, Item);
 	typedef char *((*Object)(Item));
 
 char *funcIn(int argc, char **argv, char *str);
 char *concatena(char *str1, char *str2);
-void leitura(int argc, char *argv[], char *str, double *svgH, double *svgW, FILE **svgMain, Lista listCir, Lista listRet, Lista listQua, Lista listSem, Lista listHid, Lista listTor);
+void leituraGeo(int argc, char **argv, double *svgH, double *svgW, FILE *svgMain, Vector *vetor);
+void leituraQry(int argc, char **argv, double *svgH, double *svgW, FILE *svgMain, Vector vetor);
 void funcFree(char **a);
 char *colocaBarra(char *str);
 char *pegaParametro(int argc, char *argv[], char *str);
-void writeSvg(FILE **svg, Lista listCir, Lista listRet, Lista listSem, Lista listQua, Lista listTor, Lista listHid);
 char *funcSvgQry(int argc, char **argv);
+char *funcSvgMain(int argc, char *argv[], char *str);
+char *pegaNomeBase(char *str);
+void printSvgVector(Vector vetor, FILE *svg);
+char *funcSvg(int argc, char **argv);
 
 #endif

@@ -12,4 +12,6 @@ double getRetanguloY(Retangulo r);
 char *getRetanguloCorPreenchimento(Retangulo r);
 char *getRetanguloCorContorno(Retangulo r);
 void freeCor(Retangulo r);
+void freeRetangulo(Retangulo r);
+
 #endif
