@@ -347,6 +347,10 @@ void leituraQry(int argc, char **argv, double *svgH, double *svgW, FILE *svgQry,
 				txt = fopen(aux, "w");
 				funcFree(&aux);
 			}
+			if(*svgW < x)
+				*svgW = x;
+			if (*svgH < y)
+				*svgH = y;
 			if (var == 0){
 				fprintf(txt, "%s\nNÃO\n", line);
 				fprintf(svgQry, "<circle cx = \"%f\" cy = \"%f\" r = \"3\" fill = \"red\" stroke=\"red\" stroke-width=\"1\" />\n", x, y);
